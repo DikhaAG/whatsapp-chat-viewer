@@ -1,0 +1,25 @@
+:root {
+  /* Light Mode */
+  --color-bg-primary: #efeae2;
+  --color-bg-surface: #f0f2f5;
+  --color-bubble-sent: #d9fdd3;
+  --color-bubble-received: #ffffff;
+  --color-text-primary: #111b21;
+  --color-text-secondary: #667781;
+  --color-text-bubble: #111b21;
+  --color-header-icon: #54656f;
+  --color-border-default: #d1d7db;
+}
+
+.dark {
+  /* Dark Mode */
+  --color-bg-primary: #111b21;
+  --color-bg-surface: #202c33;
+  --color-bubble-sent: #005c4b;
+  --color-bubble-received: #202c33;
+  --color-text-primary: #e9edef;
+  --color-text-secondary: #8696a0;
+  --color-text-bubble: #e9edef;
+  --color-header-icon: #aebac1;
+  --color-border-default: #374045;
+}

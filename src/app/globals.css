@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@import "../appStyles/whatsappTheme.css";
+
+@theme inline {
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-surface: var(--color-bg-surface);
+  --color-bubble-sent: var(--color-bubble-sent);
+  --color-bubble-received: var(--color-bubble-received);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-bubble: var(--color-text-bubble);
+  --color-header-icon: var(--color-header-icon);
+  --color-border-default: var(--color-border-default);
+}
+
+:root {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}

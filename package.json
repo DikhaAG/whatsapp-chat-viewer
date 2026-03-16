@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.22",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "idb": "^8.0.3",
     "jszip": "^3.10.1",

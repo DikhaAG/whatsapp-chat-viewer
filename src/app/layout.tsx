@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AppProviders } from "@/components/providers/AppProviders";
 import { Sidebar } from "@/components/layout/Sidebar";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "WA Export Viewer | Offline WhatsApp Chat Reader",
@@ -23,6 +24,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+          <Analytics />
         </AppProviders>
       </body>
     </html>

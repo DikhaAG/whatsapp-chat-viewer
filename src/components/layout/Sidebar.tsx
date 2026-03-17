@@ -35,18 +35,27 @@ export function Sidebar() {
     if (!file) return;
 
     try {
-      const { chatText, fileName, attachmentMap } = await extractChatFromZip(file);
-      const sessionId = fileName.replace(/\.zip$/i, '') + '-' + Date.now();
-      const chatName = fileName.replace(/\.zip$/i, '');
+      const { chatText, fileName } = await extractChatFromZip(file);
+
+      // 1. Ambil nama dasar tanpa ekstensi .zip
+      const baseName = fileName.replace(/\.zip$/i, '');
+
+      // 2. PERBAIKAN: Buat ID yang ramah URL (Slugify)
+      // Regex /[^a-zA-Z0-9]/g mencari SEMUA karakter selain huruf dan angka (termasuk spasi)
+      // lalu menggantinya dengan tanda strip (-). Terakhir diubah jadi huruf kecil.
+      const safeId = baseName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+
+      // 3. Gabungkan ID aman dengan waktu agar unik
+      const sessionId = safeId + '-' + Date.now();
+
+      // 4. Nama untuk Manusia (UI) tetap menggunakan spasi asli
+      const chatName = baseName;
 
       const session = await parseChatText(chatText, sessionId, chatName);
       await importNewChat(session);
 
-      if (attachmentMap && setActiveAttachmentMap) {
-        setActiveAttachmentMap(attachmentMap);
-      }
-
-      handleChatClick(sessionId);
+      // Pilih dan navigasi ke obrolan menggunakan ID yang sudah aman
+      setActiveChat(sessionId);
     } catch (error: any) {
       alert(`Failed to import chat: ${error.message}`);
     } finally {
@@ -134,8 +143,8 @@ export function Sidebar() {
                   key={session.sessionId}
                   onClick={() => handleChatClick(session.sessionId)}
                   className={`flex items-center px-4 py-3 cursor-pointer transition-colors relative group border-b border-[var(--color-border-default)]/30 ${activeChatId === session.sessionId
-                      ? 'bg-[#d1d7db]/40 dark:bg-[#374045]'
-                      : 'hover:bg-[#f5f6f6] dark:hover:bg-[#2a3942]'
+                    ? 'bg-[#d1d7db]/40 dark:bg-[#374045]'
+                    : 'hover:bg-[#f5f6f6] dark:hover:bg-[#2a3942]'
                     }`}
                 >
                   <div className="w-12 h-12 rounded-full bg-gray-400 shrink-0 mr-3 flex items-center justify-center text-white font-bold">

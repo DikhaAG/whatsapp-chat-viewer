@@ -95,10 +95,10 @@ export function ChatHeader({ session, isSearching, setIsSearching, searchQuery, 
         </div>
       </div>
       <div className="flex items-center gap-1 sm:gap-4 text-[var(--color-header-icon)]">
-        <button className="hidden sm:block p-2 rounded-full"><Video size={20} /></button>
-        <button className="hidden sm:block p-2 rounded-full"><Phone size={20} /></button>
+        {/* <button className="hidden sm:block p-2 rounded-full"><Video size={20} /></button> */}
+        {/* <button className="hidden sm:block p-2 rounded-full"><Phone size={20} /></button> */}
         <button onClick={() => setIsSearching?.(true)} className="p-2 rounded-full"><Search size={20} /></button>
-        <button className="p-2 rounded-full"><MoreVertical size={20} /></button>
+        {/* <button className="p-2 rounded-full"><MoreVertical size={20} /></button> */}
       </div>
     </header>
   );

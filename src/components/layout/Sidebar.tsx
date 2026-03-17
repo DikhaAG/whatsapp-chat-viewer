@@ -110,9 +110,9 @@ export function Sidebar() {
             >
               <Upload size={20} />
             </button>
-            <button className="p-2 text-[var(--color-header-icon)] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
+            {/* <button className="p-2 text-[var(--color-header-icon)] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
               <MoreVertical size={20} />
-            </button>
+            </button> */}
           </div>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".zip" className="hidden" />
         </header>
@@ -159,8 +159,8 @@ export function Sidebar() {
                     key={session.sessionId}
                     onClick={() => handleChatClick(session.sessionId)}
                     className={`flex items-center px-4 py-3 cursor-pointer transition-colors relative group border-b border-[var(--color-border-default)]/30 ${activeChatId === session.sessionId
-                        ? 'bg-[#d1d7db]/40 dark:bg-[#374045]'
-                        : 'hover:bg-[#f5f6f6] dark:hover:bg-[#2a3942]'
+                      ? 'bg-[#d1d7db]/40 dark:bg-[#374045]'
+                      : 'hover:bg-[#f5f6f6] dark:hover:bg-[#2a3942]'
                       }`}
                   >
                     <div className="w-12 h-12 rounded-full bg-gray-400 shrink-0 mr-3 flex items-center justify-center text-white font-bold">

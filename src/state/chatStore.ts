@@ -6,29 +6,28 @@ interface ChatState {
   chatSessions: ChatSession[];
   activeChatId: string | null;
   activeMessages: Message[];
-  activeAttachmentMap: Record<string, string>;
   isLoading: boolean;
   error: string | null;
+  attachmentMaps: Record<string, Record<string, string>>;
 
-  // Actions
   loadAllSessions: () => Promise<void>;
   setActiveChat: (sessionId: string | null) => Promise<void>;
   importNewChat: (session: ChatSession) => Promise<void>;
   removeChat: (sessionId: string) => Promise<void>;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
-  setActiveAttachmentMap: (map: Record<string, string>) => void;
+  setAttachmentMap: (sessionId: string, map: Record<string, string>) => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
   chatSessions: [],
   activeChatId: null,
   activeMessages: [],
-  activeAttachmentMap: {},
   isLoading: false,
   error: null,
+  attachmentMaps: {},
 
-  loadAllSessions: async () => {
+  loadAllSessions: async () => { /* ... kode asli tidak berubah ... */
     set({ isLoading: true });
     try {
       const sessions = await dbService.getAllChats();
@@ -46,7 +45,36 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     set({ isLoading: true });
     try {
+      // 1. Ambil teks pesan dari IndexedDB
       const fullSession = await dbService.getChatById(sessionId);
+
+      // ==========================================
+      // LOGIKA BARU: REGENERASI FILE MEDIA
+      // ==========================================
+      const currentState = get();
+
+      // Periksa: Apakah kamus gambar untuk sesi ini KOSONG di memori RAM?
+      // (Ini akan bernilai true jika pengguna baru saja menekan tombol Refresh F5)
+      if (!currentState.attachmentMaps[sessionId]) {
+        // Turun ke gudang IndexedDB untuk mencari fisik file milik sesi ini
+        const savedAttachments = await dbService.getAttachmentsBySessionId(sessionId);
+
+        if (savedAttachments.length > 0) {
+          const newMap: Record<string, string> = {};
+
+          // Bangkitkan ulang Blob URL dari data fisik yang tersimpan
+          savedAttachments.forEach(att => {
+            newMap[att.fileName] = URL.createObjectURL(att.blob);
+          });
+
+          // Simpan URL baru tersebut kembali ke memori RAM
+          set((state) => ({
+            attachmentMaps: { ...state.attachmentMaps, [sessionId]: newMap }
+          }));
+        }
+      }
+
+      // 2. Tampilkan pesan ke layar
       if (fullSession) {
         set({
           activeChatId: sessionId,
@@ -61,12 +89,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  importNewChat: async (session: ChatSession) => {
+  importNewChat: async (session: ChatSession) => { /* ... kode asli tidak berubah ... */
     set({ isLoading: true });
     try {
       await dbService.saveChat(session);
-
-      // Update local sessions list (metadata only)
       const { messages, ...metadata } = session;
       set((state) => ({
         chatSessions: [
@@ -80,21 +106,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  removeChat: async (sessionId: string) => {
+  removeChat: async (sessionId: string) => { /* ... kode asli tidak berubah ... */
     set({ isLoading: true });
     try {
       await dbService.deleteChat(sessionId);
-      set((state) => ({
-        chatSessions: state.chatSessions.filter(s => s.sessionId !== sessionId),
-        activeChatId: state.activeChatId === sessionId ? null : state.activeChatId,
-        activeMessages: state.activeChatId === sessionId ? [] : state.activeMessages,
-        isLoading: false
-      }));
+      set((state) => {
+        const newAttachmentMaps = { ...state.attachmentMaps };
+        delete newAttachmentMaps[sessionId];
+        return {
+          chatSessions: state.chatSessions.filter(s => s.sessionId !== sessionId),
+          activeChatId: state.activeChatId === sessionId ? null : state.activeChatId,
+          activeMessages: state.activeChatId === sessionId ? [] : state.activeMessages,
+          attachmentMaps: newAttachmentMaps,
+          isLoading: false
+        };
+      });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }
   },
-  setActiveAttachmentMap: (map) => set({ activeAttachmentMap: map }),
+
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
+  setAttachmentMap: (sessionId, map) => set((state) => ({
+    attachmentMaps: {
+      ...state.attachmentMaps,
+      [sessionId]: map
+    }
+  })),
 }));

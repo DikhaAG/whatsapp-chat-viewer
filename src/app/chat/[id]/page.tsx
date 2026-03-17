@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { activeChatId, activeMessages, chatSessions, setActiveChat, isLoading, error, activeAttachmentMap } = useChatStore();
+  const { activeChatId, activeMessages, chatSessions, setActiveChat, isLoading, error, attachmentMaps } = useChatStore();
 
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,7 +82,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       <div className="flex-1 relative overflow-hidden flex flex-col">
         <VirtualizedMessageList
           messages={activeMessages}
-          attachmentMap={activeAttachmentMap}
+          attachmentMap={attachmentMaps[id] || {}}
           searchQuery={searchQuery}
           targetMessageId={matchedMessageIds[currentMatchIndex] || null}
         />

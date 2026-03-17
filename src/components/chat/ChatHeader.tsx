@@ -1,56 +1,44 @@
 'use client';
 
 import React from 'react';
-import { ArrowLeft, MoreVertical, Search, Phone, Video } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { ChatSession } from '@/types/chat';
+import { Search, MoreVertical, ArrowLeft } from 'lucide-react';
+import { useUIStore } from '@/state/uiStore'; // BARU: Panggil state UI
 
-interface ChatHeaderProps {
-  session: ChatSession;
-}
-
-export function ChatHeader({ session }: ChatHeaderProps) {
-  const router = useRouter();
+export function ChatHeader({ session }: { session: any }) {
+  const { setSidebarOpen } = useUIStore(); // BARU: Fungsi untuk membuka Sidebar
 
   return (
-    <header className="h-[60px] px-4 flex items-center justify-between bg-[var(--color-bg-surface)] border-b border-[var(--color-border-default)] shrink-0 z-10 shadow-sm">
-      <div className="flex items-center flex-1 min-w-0">
+    <header className="h-[60px] px-4 flex items-center justify-between bg-[var(--color-bg-surface)] shrink-0 border-b border-[var(--color-border-default)]">
+      <div className="flex items-center gap-3">
+        {/* BARU: Tombol Back Khusus Mobile */}
         <button
-          onClick={() => router.push('/')}
-          className="mr-2 p-1 text-[var(--color-header-icon)] hover:bg-black/5 dark:hover:bg-white/5 rounded-full"
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden p-1 -ml-2 text-[var(--color-text-secondary)] rounded-full hover:bg-black/5 dark:hover:bg-white/5"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={24} />
         </button>
 
-        <div className="w-10 h-10 rounded-full bg-gray-400 shrink-0 mr-3 flex items-center justify-center text-white font-bold">
+        <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold shrink-0">
           {session.chatName.substring(0, 1).toUpperCase()}
         </div>
-
         <div className="flex-1 min-w-0">
-          <h2 className="text-[var(--color-text-primary)] font-semibold truncate leading-tight">
+          <h2 className="font-semibold text-[var(--color-text-primary)] truncate">
             {session.chatName}
           </h2>
-          <p className="text-[11px] text-[var(--color-text-secondary)] truncate">
-            {session.chatType === 'group' ? 'Group Chat' : 'Contact'}
-          </p>
+          <div className="text-xs text-[var(--color-text-secondary)] truncate">
+            {session.chatType === 'group' ? 'Tap here for group info' : 'Click here for contact info'}
+          </div>
         </div>
       </div>
 
-      {/* <div className="flex items-center gap-1 sm:gap-4 text-[var(--color-header-icon)]">
-         <button className="hidden sm:block p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full">
-            <Video size={20} />
-         </button>
-         <button className="hidden sm:block p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full">
-            <Phone size={20} />
-         </button>
-         <div className="w-[1px] h-6 bg-[var(--color-border-default)] mx-1 hidden sm:block" />
-         <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full">
-            <Search size={20} />
-         </button>
-         <button className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full">
-            <MoreVertical size={20} />
-         </button>
-      </div> */}
+      <div className="flex items-center gap-2">
+        <button className="p-2 text-[var(--color-header-icon)] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
+          <Search size={20} />
+        </button>
+        <button className="p-2 text-[var(--color-header-icon)] hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
+          <MoreVertical size={20} />
+        </button>
+      </div>
     </header>
   );
 }
